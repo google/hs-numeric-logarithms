@@ -1,0 +1,52 @@
+# Copyright 2021 Google LLC
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#      http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+name: numeric-logarithms
+version: 0.1.0.0
+category: Numeric
+synopsis: Efficient rounded log2 algorithms on integral and rational types.
+description: |
+  This provides a user-facing API for the GHC primitive 'integerLog2#', in the
+  form of functions computing the floor, ceiling, or other rounded form of the
+  base-2 logarithm of 'Integral' or 'Rational' types.
+license: Apache-2.0
+author: Andrew Pritchard <awpr@google.com>
+copyright: 2018-2021 Google LLC
+maintainer: Andrew Pritchard <awpr@google.com>
+github: google/hs-numeric-logarithms
+
+# Note: this causes CHANGELOG.md to be included in Hackage distributions.
+extra-source-files:
+  CHANGELOG.md
+
+ghc-options: -Wall -Werror
+
+dependencies:
+  - base >= 4.9 && < 4.16
+  - integer-gmp >= 0.5 && < 1.1
+
+library:
+  source-dirs: src
+  exposed-modules:
+    - Numeric.Logarithms
+
+tests:
+  Logarithms-test:
+    source-dirs: test
+    main: LogarithmsTest.hs
+    dependencies:
+      - numeric-logarithms
+      - QuickCheck
+      - test-framework
+      - test-framework-quickcheck2
