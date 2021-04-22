@@ -4,7 +4,7 @@ cabal-version: 1.12
 --
 -- see: https://github.com/sol/hpack
 --
--- hash: 64789c14bf8eea0bb75b70dcded199ceea146edd44d84a4ebea54a977d31eac1
+-- hash: 055716fd894ce8e71c2be1db7a3f5a30b6ef588291635e8f57429d608c19eb71
 
 name:           numeric-logarithms
 version:        0.1.0.0
@@ -35,7 +35,6 @@ library
       Paths_numeric_logarithms
   hs-source-dirs:
       src
-  ghc-options: -Wall -Werror
   build-depends:
       base >=4.9 && <4.16
     , integer-gmp >=0.5 && <1.1
@@ -48,7 +47,6 @@ test-suite Logarithms-test
       Paths_numeric_logarithms
   hs-source-dirs:
       test
-  ghc-options: -Wall -Werror
   build-depends:
       QuickCheck
     , base >=4.9 && <4.16
