@@ -19,8 +19,14 @@
 {-# LANGUAGE MagicHash #-}
 
 module Numeric.Logarithms
-         ( log2Approx, log2Floor, log2Ceiling, log2With
+         ( -- * Real Logarithms
+           log2Floor, log2Ceiling
+           -- ** Advanced
+         , log2Approx, log2With
+           -- * Integer Logarithms
          , ilog2Floor, ilog2Ceiling
+           -- ** Advanced
+         , ilog2Approx, ilog2With
          ) where
 
 import Data.Bits (bit)
@@ -93,31 +99,43 @@ log2Approx_ x =
         else log2Unchecked num den
 
 {-# INLINE log2With_ #-}
-log2With_ :: (HasCallStack, Real a) => (Ordering -> Int) -> a -> Int
+log2With_ :: (HasCallStack, Real a) => (Int -> Ordering -> Int) -> a -> Int
 log2With_ adj x =
-  let (lg, cmp) = log2Approx_ x
-  in  lg + adj cmp
+  let !(lg, cmp) = log2Approx_ x
+  in  adj lg cmp
 
 -- | Returns an approximate base-2 logarithm of the argument.
 --
 -- The returned @Int@ is one of the two nearest integers to the exact result,
 -- and the returned @Ordering@ tells whether the exact result is greater than,
--- equal to, or less than the @Int@.
+-- equal to, or less than the @Int@.  `LT` means the exact result is less than
+-- the rounded result.
+--
+-- This effectively gives results like "between 7 and 8" and leaves it up to
+-- the caller to decide how (or whether) to round the result.  See also
+-- `log2With` for a version that will always round, but leaves the particular
+-- rounding strategy up to the caller.
 log2Approx :: (HasCallStack, Real a) => a -> (Int, Ordering)
 log2Approx = log2Approx_
 
 -- | Returns the base-2 logarithm with custom rounding.
 --
-log2With :: (HasCallStack, Real a) => (Ordering -> Int) -> a -> Int
+-- The first parameter is a rounding adjustment function: given the approximate
+-- result and an 'Ordering' indicating its relation to the exact result, return
+-- the rounded result.
+--
+-- This could be useful if you want something other than floor or ceil, e.g.
+-- round-towards-0, round-towards-even, etc.
+log2With :: (HasCallStack, Real a) => (Int -> Ordering -> Int) -> a -> Int
 log2With = log2With_
 
 -- | Returns the floor of the base-2 logarithm of a 'Real' argument.
 log2Floor :: (HasCallStack, Real a) => a -> Int
-log2Floor = log2With_ (\case LT -> -1; _ -> 0)
+log2Floor = log2With_ (\x -> \case LT -> x - 1; _ -> x)
 
 -- | Returns the ceiling of the base-2 logarithm of a 'Real' argument.
 log2Ceiling :: (HasCallStack, Real a) => a -> Int
-log2Ceiling = log2With_ (\case GT -> 1; _ -> 0)
+log2Ceiling = log2With_ (\x -> \case GT -> x + 1; _ -> x)
 
 {-# INLINE withPositiveInteger #-}
 withPositiveInteger :: HasCallStack => (Integer -> r) -> Integer -> r
@@ -133,6 +151,20 @@ ilog2Floor x = withPositiveInteger integerLog2Floor (toInteger x)
 -- | Returns the ceiling of the base-2 logarithm of an 'Integral' argument.
 {-# INLINABLE ilog2Ceiling #-}
 ilog2Ceiling :: (HasCallStack, Integral a) => a -> Int
-ilog2Ceiling x = withPositiveInteger
-  (\xi -> let lg = integerLog2Floor xi in lg + if xi > bit lg then 1 else 0)
+ilog2Ceiling = ilog2With (\x -> \case GT -> x + 1; _ -> x)
+
+-- | Returns the approximate base-2 logarithm of an 'Integral' argument.
+{-# INLINABLE ilog2Approx #-}
+ilog2Approx :: (HasCallStack, Integral a) => a -> (Int, Ordering)
+ilog2Approx x = withPositiveInteger
+  (\xi ->
+    let lg = integerLog2Floor xi
+    in  (lg, if xi > bit lg then GT else EQ))
   (toInteger x)
+
+-- | Returns the base-2 logarithm of an 'Integral' with custom rounding.
+{-# INLINABLE ilog2With #-}
+ilog2With :: (HasCallStack, Integral a) => (Int -> Ordering -> Int) -> a -> Int
+ilog2With adj x =
+  let !(lg, cmp) = ilog2Approx x
+  in  adj lg cmp
