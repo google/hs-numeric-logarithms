@@ -174,5 +174,7 @@ jobs:
       - name: Build and Haddock
         run: $STACK build --haddock --test --no-run-tests
 
+      # Run tests with concurrency disabled; see
+      # https://github.com/commercialhaskell/stack/issues/5024.
       - name: Test
-        run: $STACK build --haddock --test
+        run: $STACK build --haddock --test -j 1
