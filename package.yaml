@@ -39,6 +39,10 @@ library:
   exposed-modules:
     - Numeric.Logarithms
 
+  when:
+    condition: false
+    other-modules: Paths_numeric_logarithms
+
 tests:
   Logarithms-test:
     source-dirs: test
@@ -48,3 +52,7 @@ tests:
       - QuickCheck
       - test-framework
       - test-framework-quickcheck2
+
+    when:
+      condition: false
+      other-modules: Paths_numeric_logarithms

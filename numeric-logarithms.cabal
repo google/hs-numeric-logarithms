@@ -4,7 +4,7 @@ cabal-version: 1.12
 --
 -- see: https://github.com/sol/hpack
 --
--- hash: 60ed125358f30b48d692a0cbc602a03924da6185ee69f01e50b22b842f5323be
+-- hash: fd7dbc02187b47e8581930a67bbdf2c610019cf87312c690a4fac627fc11d585
 
 name:           numeric-logarithms
 version:        0.1.0.0
@@ -31,8 +31,6 @@ source-repository head
 library
   exposed-modules:
       Numeric.Logarithms
-  other-modules:
-      Paths_numeric_logarithms
   hs-source-dirs:
       src
   build-depends:
@@ -43,8 +41,6 @@ library
 test-suite Logarithms-test
   type: exitcode-stdio-1.0
   main-is: LogarithmsTest.hs
-  other-modules:
-      Paths_numeric_logarithms
   hs-source-dirs:
       test
   build-depends:
