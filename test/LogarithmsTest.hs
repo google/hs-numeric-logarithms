@@ -12,6 +12,7 @@
 -- See the License for the specific language governing permissions and
 -- limitations under the License.
 
+{-# LANGUAGE CPP #-}
 {-# LANGUAGE AllowAmbiguousTypes #-}
 {-# LANGUAGE ScopedTypeVariables #-}
 {-# LANGUAGE TypeApplications #-}
@@ -21,7 +22,12 @@ module Main(main) where
 import Test.Framework.Providers.QuickCheck2 (testProperty)
 import Test.QuickCheck
   ( (===), (.&&.), Arbitrary(..), Property
-  , forAll, suchThat, withMaxSuccess
+  , forAll, suchThat
+#if MIN_VERSION_QuickCheck(2, 10, 0)
+  , withMaxSuccess
+#else
+  , Testable, property
+#endif
   )
 
 import Test.Framework(defaultMain)
@@ -34,6 +40,11 @@ import Numeric.Logarithms
 exp2 :: Int -> Rational
 exp2 x | x < 0 = recip (exp2 (-x))
 exp2 x = 2 ^ x
+
+#if !MIN_VERSION_QuickCheck(2, 10, 0)
+withMaxSuccess :: Testable prop => Int -> prop -> Property
+withMaxSuccess _n = property
+#endif
 
 prop_log2FloorCorrect :: forall a. (Arbitrary a, Real a, Show a) => Property
 prop_log2FloorCorrect =
