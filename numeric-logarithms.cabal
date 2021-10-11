@@ -3,12 +3,10 @@ cabal-version: 1.12
 -- This file has been generated from package.yaml by hpack version 0.34.4.
 --
 -- see: https://github.com/sol/hpack
---
--- hash: fd7dbc02187b47e8581930a67bbdf2c610019cf87312c690a4fac627fc11d585
 
 name:           numeric-logarithms
 version:        0.1.0.0
-synopsis:       Efficient rounded log2 algorithms on integral and rational types.
+synopsis:       Integral and rational log2 algorithms
 description:    This provides a user-facing API for the GHC primitive 'integerLog2#', in the
                 form of functions computing the floor, ceiling, or other rounded form of the
                 base-2 logarithm of 'Integral' or 'Rational' types.
